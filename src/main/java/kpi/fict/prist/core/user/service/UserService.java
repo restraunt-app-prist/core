@@ -44,4 +44,11 @@ public class UserService {
             .build();
         return userRepository.save(userProfile);
     }
+
+    public UserProfileEntity setPhoneNumber(String externalId, String phoneNumber) {
+        UserProfileEntity userProfile = userRepository.findByExternalId(externalId)
+            .orElseThrow(() -> new IllegalStateException("User with externalId " + externalId + " not found"));
+        userProfile.setPhoneNumber(phoneNumber);
+        return userRepository.save(userProfile);
+    }
 }

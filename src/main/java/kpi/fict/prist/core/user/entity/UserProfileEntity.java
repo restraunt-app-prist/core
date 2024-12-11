@@ -8,14 +8,15 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.domain.Persistable;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
 @Builder
 @NoArgsConstructor
-@AllArgsConstructor
 @Document("user_profile")
+@AllArgsConstructor(onConstructor_ = @PersistenceCreator)
 public class UserProfileEntity implements Persistable<String> {
 
     @Id
@@ -25,6 +26,7 @@ public class UserProfileEntity implements Persistable<String> {
     private String lastName;
     private String email;
     private String pictureUrl;
+    private String phoneNumber;
     @CreatedDate
     private LocalDateTime creationDate;
     @LastModifiedDate
