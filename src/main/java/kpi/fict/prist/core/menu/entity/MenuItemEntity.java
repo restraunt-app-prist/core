@@ -1,12 +1,11 @@
 package kpi.fict.prist.core.menu.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.annotation.PersistenceCreator;
+import org.springframework.data.domain.Persistable;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import kpi.fict.prist.core.common.MenuCategory;
@@ -17,9 +16,9 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 @NoArgsConstructor
-@AllArgsConstructor
+@AllArgsConstructor(onConstructor_ = @PersistenceCreator)
 @Document("menu_items")
-public class MenuItemEntity {
+public class MenuItemEntity implements Persistable<String> {
 
     @Id
     private String id;
@@ -35,4 +34,9 @@ public class MenuItemEntity {
 
     @LastModifiedDate
     private LocalDateTime updatedAt;
+
+    @Override
+    public boolean isNew() {
+        return id == null;
+    }
 }
