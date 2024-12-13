@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/menu")
@@ -40,6 +41,13 @@ public class MenuController {
     @GetMapping
     public ResponseEntity<List<MenuItemEntity>> getAllMenuItems() {
         return ResponseEntity.ok(menuService.getAllMenuItems());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<MenuItemEntity> getMenuItemById(@PathVariable String id) {
+        Optional<MenuItemEntity> menuItem = menuService.getMenuItemById(id);
+        return menuItem.map(ResponseEntity::ok)
+            .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("/category/{category}")

@@ -9,6 +9,7 @@ import kpi.fict.prist.core.menu.entity.MenuItemEntity;
 import kpi.fict.prist.core.menu.repository.MenuItemEntityRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class MenuService {
@@ -60,6 +61,10 @@ public class MenuService {
 
     public List<MenuItemEntity> getAllMenuItems() {
         return menuItemRepository.findAll();
+    }
+
+    public Optional<MenuItemEntity> getMenuItemById(String id) {
+        return menuItemRepository.findById(id);
     }
 
     public List<MenuItemEntity> getMenuItemsByCategory(MenuCategory category) {
