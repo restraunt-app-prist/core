@@ -1,10 +1,8 @@
 package kpi.fict.prist.core.payment.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class CreatePaymentRequest {
     private long amount;
     private String description;
