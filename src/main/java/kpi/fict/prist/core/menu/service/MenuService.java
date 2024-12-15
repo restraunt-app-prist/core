@@ -25,6 +25,7 @@ public class MenuService {
         MenuItemEntity menuItem = MenuItemEntity.builder()
             .name(createMenuItemRequest.getName())
             .description(createMenuItemRequest.getDescription())
+            .pictureUrl(createMenuItemRequest.getPictureUrl())
             .price(createMenuItemRequest.getPrice())
             .category(createMenuItemRequest.getCategory())
             .available(createMenuItemRequest.getAvailable())

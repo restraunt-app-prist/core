@@ -4,11 +4,13 @@ import java.math.BigDecimal;
 import kpi.fict.prist.core.common.MenuCategory;
 import kpi.fict.prist.core.menu.dto.CreateMenuItemRequest;
 import kpi.fict.prist.core.menu.service.MenuService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 public class BootstrapComponent {
 
@@ -78,6 +80,7 @@ public class BootstrapComponent {
                 .category(MenuCategory.SNACKS)
                 .build();
             menuService.createMenuItem(sandwich);
+            log.info("Menu database is empty => bootstrapping menu!");
         }
     }
 

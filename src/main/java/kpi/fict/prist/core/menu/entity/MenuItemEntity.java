@@ -25,6 +25,7 @@ public class MenuItemEntity implements Persistable<String> {
 
     private String name;
     private String description;
+    private String pictureUrl;
     private BigDecimal price;
     private MenuCategory category;
     private boolean available;
