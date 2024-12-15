@@ -1,5 +1,8 @@
 package kpi.fict.prist.core.common;
 
+import lombok.Getter;
+
+@Getter
 public enum StripeCurrency {
     USD("usd"),
     EUR("eur"),
@@ -11,7 +14,4 @@ public enum StripeCurrency {
         this.code = code;
     }
 
-    public String getCode() {
-        return code;
-    }
 }

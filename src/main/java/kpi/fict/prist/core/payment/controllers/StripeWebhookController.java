@@ -11,7 +11,7 @@ import kpi.fict.prist.core.payment.service.StripeWebhookService;
 import java.io.BufferedReader;
 
 @RestController
-@RequestMapping("/api/payments/webhook")
+@RequestMapping("payments/webhook")
 public class StripeWebhookController {
 
     private final StripeWebhookService stripeWebhookService;

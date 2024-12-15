@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/cart")
+@RequestMapping("cart")
 public class CartController {
 
     private final CartService cartService;
@@ -24,13 +24,9 @@ public class CartController {
         return ResponseEntity.ok(cart);
     }
 
-    @PostMapping("/items")
-    public ResponseEntity<String> addItemToCart(
-        @AuthenticationPrincipal Jwt jwt,
-        @RequestBody AddToCartRequest request
-    ) {
+    @PostMapping("items")
+    public ResponseEntity<String> addItemToCart(@AuthenticationPrincipal Jwt jwt, @RequestBody AddToCartRequest request) {
         String userExternalId = jwt.getSubject();
-
         cartService.addItemToCart(userExternalId, request);
         return ResponseEntity.ok("Item added to cart successfully.");
     }

@@ -1,4 +1,4 @@
-package kpi.fict.prist.core.user.controllers;
+package kpi.fict.prist.core.user.controller;
 
 import kpi.fict.prist.core.user.dto.UserResponse;
 import kpi.fict.prist.core.user.entity.UserProfileEntity;

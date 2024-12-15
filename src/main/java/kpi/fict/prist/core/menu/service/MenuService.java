@@ -1,5 +1,6 @@
 package kpi.fict.prist.core.menu.service;
 
+import kpi.fict.prist.core.common.exception.MenuItemNotFoundException;
 import org.springframework.stereotype.Service;
 
 import kpi.fict.prist.core.common.MenuCategory;
@@ -52,7 +53,7 @@ public class MenuService {
                 }
                 return menuItemRepository.save(existingItem);
             })
-            .orElseThrow(() -> new RuntimeException("Menu item not found"));
+            .orElseThrow(() -> new MenuItemNotFoundException(id));
     }
 
     public void deleteMenuItem(String id) {
