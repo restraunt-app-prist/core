@@ -18,7 +18,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document("order")
 @NoArgsConstructor
 @AllArgsConstructor(onConstructor_ = @PersistenceCreator)
-public class OrderEntity implements Persistable<Long> {
+public class OrderEntity implements Persistable<String> {
 
     @Id
     private String id;
