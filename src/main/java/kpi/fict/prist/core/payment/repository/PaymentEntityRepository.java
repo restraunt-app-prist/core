@@ -9,5 +9,5 @@ import kpi.fict.prist.core.payment.entity.PaymentEntity;
 
 @Repository
 public interface PaymentEntityRepository extends MongoRepository<PaymentEntity, String> {
-    Optional<PaymentEntity> findByPaymentId(String paymentId);
+    Optional<PaymentEntity> findByPaymentIntentId(String paymentId);
 }

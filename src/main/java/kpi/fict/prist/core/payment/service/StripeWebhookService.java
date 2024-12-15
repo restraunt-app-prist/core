@@ -45,7 +45,7 @@ public class StripeWebhookService {
     }
 
     private void saveOrUpdatePayment(PaymentIntent paymentIntent, String status) {
-        PaymentEntity paymentEntity = paymentRepository.findByPaymentId(paymentIntent.getId())
+        PaymentEntity paymentEntity = paymentRepository.findByPaymentIntentId(paymentIntent.getId())
                 .map(existingPayment -> {
                     existingPayment.setStatus(status);
 

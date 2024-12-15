@@ -7,3 +7,6 @@ spring:
   data:
     mongodb:
       uri: mongodb://localhost:27017/restaurant
+stripe:
+  webhook:
+    secret: abracadabra
