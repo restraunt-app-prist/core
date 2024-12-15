@@ -20,21 +20,21 @@ public class MenuController {
 
     private final MenuService menuService;
 
-    @PostMapping
-    public ResponseEntity<MenuItemEntity> createMenuItem(@RequestBody CreateMenuItemRequest request) {
-        return ResponseEntity.ok(menuService.createMenuItem(request));
-    }
-
-    @PutMapping("{id}")
-    public MenuItemEntity updateMenuItem(@PathVariable String id, @RequestBody UpdateMenuItemRequest request) {
-        return menuService.updateMenuItem(id, request);
-    }
-
-    @DeleteMapping("{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteMenuItem(@PathVariable String id) {
-        menuService.deleteMenuItem(id);
-    }
+//    @PostMapping
+//    public ResponseEntity<MenuItemEntity> createMenuItem(@RequestBody CreateMenuItemRequest request) {
+//        return ResponseEntity.ok(menuService.createMenuItem(request));
+//    }
+//
+//    @PutMapping("{id}")
+//    public MenuItemEntity updateMenuItem(@PathVariable String id, @RequestBody UpdateMenuItemRequest request) {
+//        return menuService.updateMenuItem(id, request);
+//    }
+//
+//    @DeleteMapping("{id}")
+//    @ResponseStatus(HttpStatus.NO_CONTENT)
+//    public void deleteMenuItem(@PathVariable String id) {
+//        menuService.deleteMenuItem(id);
+//    }
 
     @GetMapping
     public List<MenuItemEntity> getAllMenuItems() {
@@ -48,8 +48,8 @@ public class MenuController {
             .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping("category/{category}")
-    public List<MenuItemEntity> getMenuItemsByCategory(@PathVariable MenuCategory category) {
+    @GetMapping("category")
+    public List<MenuItemEntity> getMenuItemsByCategory(@RequestParam(required = false, defaultValue = "MEALS") MenuCategory category) {
         return menuService.getMenuItemsByCategory(category);
     }
 }

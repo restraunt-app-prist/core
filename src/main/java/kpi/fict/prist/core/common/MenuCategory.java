@@ -1,8 +1,8 @@
 package kpi.fict.prist.core.common;
 
 public enum MenuCategory {
-    DRINKS,
     MEALS,
+    SNACKS,
     DESSERTS,
-    SNACKS
+    DRINKS,
 }
