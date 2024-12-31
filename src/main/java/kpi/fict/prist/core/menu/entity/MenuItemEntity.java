@@ -10,7 +10,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import kpi.fict.prist.core.common.MenuCategory;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
@@ -26,7 +25,7 @@ public class MenuItemEntity implements Persistable<String> {
     private String name;
     private String description;
     private String pictureUrl;
-    private BigDecimal price;
+    private Double price;
     private MenuCategory category;
     private boolean available;
 

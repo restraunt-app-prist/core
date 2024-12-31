@@ -1,11 +1,12 @@
 package kpi.fict.prist.core.order.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -22,12 +23,31 @@ public class OrderEntity implements Persistable<String> {
 
     @Id
     private String id;
-    @CreatedBy
-    private String creatorUserId;
+
+    private List<CartItem> items;
+    private Double totalPrice;
+
+    private String paymentId;
+    private OrderStatus status; 
+    private String userExternalId;
+
     @CreatedDate
     private LocalDateTime creationDate;
     @LastModifiedDate
     private LocalDateTime lastUpdateDate;
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class CartItem {
+        private String menuItemId;
+        private Integer quantity;
+    }
+
+    public enum OrderStatus {
+        PENDING, PAID, FAILED
+    }
 
     @Override
     public boolean isNew() {
