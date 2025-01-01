@@ -12,6 +12,7 @@ import kpi.fict.prist.core.cart.entity.CartEntity;
 import kpi.fict.prist.core.cart.service.CartService;
 import kpi.fict.prist.core.menu.entity.MenuItemEntity;
 import kpi.fict.prist.core.menu.service.MenuService;
+import kpi.fict.prist.core.order.dto.OrderRequest;
 import kpi.fict.prist.core.order.entity.OrderEntity;
 import kpi.fict.prist.core.order.entity.OrderEntity.OrderStatus;
 import kpi.fict.prist.core.order.repository.OrderEntityRepository;
@@ -40,7 +41,9 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderEntity createOrder(String userExternalId) {
+    public OrderEntity createOrder(OrderRequest orderRequest) {
+        String userExternalId = orderRequest.getUserExternalId();
+
         // Fetch the user's cart
         CartEntity cart = cartService.getCartByUserExternalId(userExternalId);
 

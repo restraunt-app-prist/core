@@ -1,5 +1,7 @@
 package kpi.fict.prist.core.order.controller;
 
+import kpi.fict.prist.core.order.dto.CreateOrderRequest;
+import kpi.fict.prist.core.order.dto.OrderRequest;
 import kpi.fict.prist.core.order.entity.OrderEntity;
 import kpi.fict.prist.core.order.service.OrderService;
 import org.springframework.http.HttpStatus;
@@ -48,10 +50,10 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<OrderEntity> createOrder(@AuthenticationPrincipal Jwt jwt) {
+    public ResponseEntity<OrderEntity> createOrder(@AuthenticationPrincipal Jwt jwt, @RequestBody CreateOrderRequest request) {
         String userExternalId = jwt.getSubject();
         
-        OrderEntity createdOrder = orderService.createOrder(userExternalId);
+        OrderEntity createdOrder = orderService.createOrder(new OrderRequest(userExternalId, request.getPaymentMethodId(), request.getLocation()));
         return new ResponseEntity<>(createdOrder, HttpStatus.CREATED);
     }
 }

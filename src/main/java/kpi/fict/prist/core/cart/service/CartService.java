@@ -7,6 +7,7 @@ import kpi.fict.prist.core.cart.entity.CartEntity;
 import kpi.fict.prist.core.cart.repository.CartEntityRepository;
 import kpi.fict.prist.core.menu.repository.MenuItemEntityRepository;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
@@ -39,6 +40,10 @@ public class CartService {
 
         CartEntity cart = cartRepository.findByUserExternalId(userExternalId)
             .orElseGet(() -> createNewCart(userExternalId));
+
+        if (cart.getItems() == null) {
+            cart.setItems(new ArrayList<>());
+        }
 
         Optional<CartEntity.CartItem> existingItem = cart.getItems().stream()
             .filter(item -> item.getMenuItemId().equals(request.getMenuItemId()))
