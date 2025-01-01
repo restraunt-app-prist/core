@@ -17,25 +17,26 @@ public class CartController {
     private final CartService cartService;
 
     @GetMapping
-    public ResponseEntity<CartEntity> getCart(@AuthenticationPrincipal Jwt jwt) {
+    public CartEntity getCart(@AuthenticationPrincipal Jwt jwt) {
         String userExternalId = jwt.getSubject();
-
-        CartEntity cart = cartService.getCartByUserExternalId(userExternalId);
-        return ResponseEntity.ok(cart);
+        return cartService.getCartByUserExternalId(userExternalId);
     }
 
     @PostMapping("items")
-    public ResponseEntity<String> addItemToCart(@AuthenticationPrincipal Jwt jwt, @RequestBody AddToCartRequest request) {
+    public CartEntity addItemToCart(@AuthenticationPrincipal Jwt jwt, @RequestBody AddToCartRequest request) {
         String userExternalId = jwt.getSubject();
-        cartService.addItemToCart(userExternalId, request);
-        return ResponseEntity.ok("Item added to cart successfully.");
+        return cartService.addItemToCart(userExternalId, request);
+    }
+
+    @DeleteMapping("items/{menuItemId}")
+    public void removeItemFromCart(@AuthenticationPrincipal Jwt jwt, @PathVariable String menuItemId) {
+        String userExternalId = jwt.getSubject();
+        cartService.removeItemFromCart(userExternalId, menuItemId);
     }
 
     @DeleteMapping
-    public ResponseEntity<String> clearCart(@AuthenticationPrincipal Jwt jwt) {
+    public void clearCart(@AuthenticationPrincipal Jwt jwt) {
         String userExternalId = jwt.getSubject();
-
         cartService.clearCart(userExternalId);
-        return ResponseEntity.ok("Cart cleared successfully.");
     }
 }

@@ -1,5 +1,7 @@
 package kpi.fict.prist.core.cart.service;
 
+import java.util.List;
+import kpi.fict.prist.core.cart.entity.CartEntity.CartItem;
 import org.springframework.stereotype.Service;
 
 import kpi.fict.prist.core.cart.dto.AddToCartRequest;
@@ -29,7 +31,7 @@ public class CartService {
             });
     }
 
-    public void addItemToCart(String userExternalId, AddToCartRequest request) {
+    public CartEntity addItemToCart(String userExternalId, AddToCartRequest request) {
         if (request.getQuantity() <= 0) {
             throw new IllegalArgumentException("Quantity must be greater than zero.");
         }
@@ -55,7 +57,7 @@ public class CartService {
             cart.getItems().add(new CartEntity.CartItem(request.getMenuItemId(), request.getQuantity()));
         }
 
-        cartRepository.save(cart);
+        return cartRepository.save(cart);
     }
 
     private CartEntity createNewCart(String userExternalId) {
@@ -67,6 +69,16 @@ public class CartService {
     public void clearCart(String userExternalId) {
         CartEntity cart = getCartByUserExternalId(userExternalId);
         cart.getItems().clear();
+        cartRepository.save(cart);
+    }
+
+    public void removeItemFromCart(String userExternalId, String menuItemId) {
+        CartEntity cart = getCartByUserExternalId(userExternalId);
+        List<CartItem> items = cart.getItems();
+        List<CartItem> newItems = items.stream()
+            .filter(item -> !item.getMenuItemId().equals(menuItemId))
+            .toList();
+        cart.setItems(newItems);
         cartRepository.save(cart);
     }
 }
