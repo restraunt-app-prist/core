@@ -1,7 +1,10 @@
 package kpi.fict.prist.core.cart.service;
 
+import java.util.Collections;
 import java.util.List;
 import kpi.fict.prist.core.cart.entity.CartEntity.CartItem;
+import kpi.fict.prist.core.menu.entity.MenuItemEntity;
+import kpi.fict.prist.core.menu.service.MenuService;
 import org.springframework.stereotype.Service;
 
 import kpi.fict.prist.core.cart.dto.AddToCartRequest;
@@ -17,10 +20,12 @@ public class CartService {
 
     private final CartEntityRepository cartRepository;
     private final MenuItemEntityRepository menuItemRepository;
+    private final MenuService menuService;
 
-    public CartService(CartEntityRepository cartRepository, MenuItemEntityRepository menuItemRepository) {
+    public CartService(CartEntityRepository cartRepository, MenuItemEntityRepository menuItemRepository, MenuService menuService) {
         this.cartRepository = cartRepository;
         this.menuItemRepository = menuItemRepository;
+        this.menuService = menuService;
     }
 
     public CartEntity getCartByUserExternalId(String userExternalId) {
@@ -81,4 +86,16 @@ public class CartService {
         cart.setItems(newItems);
         cartRepository.save(cart);
     }
+
+    public Double totalPrice(String userExternalId) {
+        CartEntity cart = getCartByUserExternalId(userExternalId);
+        List<CartItem> items = cart.getItems();
+        return Optional.ofNullable(items).orElse(Collections.emptyList()).stream()
+            .map(item -> menuService.getMenuItemById(item.getMenuItemId())
+                .map(menuItem -> menuItem.getPrice() * item.getQuantity())
+                .orElse(0.0))
+            .reduce(Double::sum)
+            .orElse(0.0);
+    }
+
 }

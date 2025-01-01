@@ -1,7 +1,9 @@
 package kpi.fict.prist.core.cart.controller;
 
 import kpi.fict.prist.core.cart.dto.AddToCartRequest;
+import kpi.fict.prist.core.cart.dto.CartResponse;
 import kpi.fict.prist.core.cart.entity.CartEntity;
+import kpi.fict.prist.core.cart.service.CartMapper;
 import kpi.fict.prist.core.cart.service.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,11 +17,14 @@ import org.springframework.web.bind.annotation.*;
 public class CartController {
 
     private final CartService cartService;
+    private final CartMapper cartMapper;
 
     @GetMapping
-    public CartEntity getCart(@AuthenticationPrincipal Jwt jwt) {
+    public CartResponse getCart(@AuthenticationPrincipal Jwt jwt) {
         String userExternalId = jwt.getSubject();
-        return cartService.getCartByUserExternalId(userExternalId);
+        CartEntity cart = cartService.getCartByUserExternalId(userExternalId);
+        Double totalPrice = cartService.totalPrice(userExternalId);
+        return cartMapper.toCartResponse(cart, totalPrice);
     }
 
     @PostMapping("items")
