@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import kpi.fict.prist.core.cart.entity.CartEntity.CartItem;
+import kpi.fict.prist.core.order.dto.CreateOrderRequest;
 import kpi.fict.prist.core.order.entity.OrderEntity.OrderItem;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,7 +15,6 @@ import kpi.fict.prist.core.cart.entity.CartEntity;
 import kpi.fict.prist.core.cart.service.CartService;
 import kpi.fict.prist.core.menu.entity.MenuItemEntity;
 import kpi.fict.prist.core.menu.service.MenuService;
-import kpi.fict.prist.core.order.dto.OrderRequest;
 import kpi.fict.prist.core.order.entity.OrderEntity;
 import kpi.fict.prist.core.order.entity.OrderEntity.OrderStatus;
 import kpi.fict.prist.core.order.repository.OrderEntityRepository;
@@ -25,6 +25,8 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class OrderService {
+
+    private static final Double DELIVERY_PRICE_PER_KILOMETER_UAH = 20.0;
 
     private final OrderEntityRepository orderRepository;
     private final CartService cartService;
@@ -43,8 +45,7 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderEntity createOrder(OrderRequest orderRequest) {
-        String userExternalId = orderRequest.getUserExternalId();
+    public OrderEntity createOrder(String userExternalId, CreateOrderRequest orderRequest) {
 
         // Fetch the user's cart
         CartEntity cart = cartService.getCartByUserExternalId(userExternalId);
@@ -54,23 +55,23 @@ public class OrderService {
         }
 
         // Convert CartEntity.CartItem to OrderEntity.CartItem and fetch additional details from MenuService
-        List<MenuItemEntity> menuItems = cart.getItems().stream()
-        .map(cartItem -> {
-            var menuItem = menuService.getMenuItemById(cartItem.getMenuItemId());
-            return menuItem.orElse(null);
-        })
-        .filter(Objects::nonNull)
-        .toList();
+        List<MenuItemEntity> cartMenuItems = cart.getItems().stream()
+            .map(cartItem -> menuService.getMenuItemById(cartItem.getMenuItemId()))
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .toList();
 
         AtomicReference<Double> totalPrice = new AtomicReference<>(0.0);
-        List<OrderItem> orderItems = menuItems.stream()
-        .map(menuItem -> {
-            CartItem cartItem = cart.getItems().stream()
-                .filter(item -> item.getMenuItemId().equals(menuItem.getId()))
-                .findFirst()
-                .orElse(null);
-    
-            if (cartItem != null) {
+        List<OrderItem> orderItems = cartMenuItems.stream()
+            .map(menuItem -> {
+                CartItem cartItem = cart.getItems().stream()
+                    .filter(item -> item.getMenuItemId().equals(menuItem.getId()))
+                    .findFirst()
+                    .orElse(null);
+
+                if (cartItem == null) {
+                    return null;
+                }
                 double itemPrice = menuItem.getPrice() * cartItem.getQuantity();
                 totalPrice.updateAndGet(price -> price + itemPrice);
 
@@ -78,21 +79,20 @@ public class OrderService {
                     .menuItemId(menuItem.getId())
                     .quantity(cartItem.getQuantity())
                     .build();
-            } else {
-                return null;
-            }
-        })
-        .filter(Objects::nonNull)
-        .collect(Collectors.toList());
-
+            })
+            .filter(Objects::nonNull)
+            .collect(Collectors.toList());
+        if (orderRequest.deliveryDistance() != null) {
+            totalPrice.updateAndGet(price -> price + orderRequest.deliveryDistance() * DELIVERY_PRICE_PER_KILOMETER_UAH);
+        }
         // Create and save the order
         OrderEntity order = OrderEntity.builder()
             .items(orderItems)
             .totalPrice(totalPrice.get())
             .status(OrderStatus.PENDING)
             .userExternalId(userExternalId)
-            .location(orderRequest.getLocation())
-            .notes(orderRequest.getNotes())
+            .location(orderRequest.deliveryLocation())
+            .notes(orderRequest.description())
             .build();
 
         order = orderRepository.save(order);

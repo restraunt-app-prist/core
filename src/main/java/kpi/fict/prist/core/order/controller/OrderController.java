@@ -1,7 +1,6 @@
 package kpi.fict.prist.core.order.controller;
 
 import kpi.fict.prist.core.order.dto.CreateOrderRequest;
-import kpi.fict.prist.core.order.dto.OrderRequest;
 import kpi.fict.prist.core.order.entity.OrderEntity;
 import kpi.fict.prist.core.order.service.OrderService;
 import org.springframework.http.HttpStatus;
@@ -35,11 +34,7 @@ public class OrderController {
     @GetMapping("my")
     public ResponseEntity<List<OrderEntity>> getOrdersByUserExternalId(@AuthenticationPrincipal Jwt jwt) {
         String userExternalId = jwt.getSubject();
-
         List<OrderEntity> orders = orderService.getOrdersByUserExternalId(userExternalId);
-        if (orders.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
         return ResponseEntity.ok(orders);
     }
 
@@ -53,6 +48,6 @@ public class OrderController {
     @ResponseStatus(HttpStatus.CREATED)
     public OrderEntity createOrder(@AuthenticationPrincipal Jwt jwt, @RequestBody CreateOrderRequest request) {
         String userExternalId = jwt.getSubject();
-        return orderService.createOrder(new OrderRequest(userExternalId, request.getPaymentMethodId(), request.getLocation(), request.getNotes()));
+        return orderService.createOrder(userExternalId, request);
     }
 }
