@@ -5,6 +5,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import kpi.fict.prist.core.cart.entity.CartEntity.CartItem;
+import kpi.fict.prist.core.order.entity.OrderEntity.OrderItem;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,12 +60,12 @@ public class OrderService {
             return menuItem.orElse(null);
         })
         .filter(Objects::nonNull)
-        .collect(Collectors.toList());
+        .toList();
 
         AtomicReference<Double> totalPrice = new AtomicReference<>(0.0);
-        List<OrderEntity.CartItem> orderItems = menuItems.stream()
+        List<OrderItem> orderItems = menuItems.stream()
         .map(menuItem -> {
-            var cartItem = cart.getItems().stream()
+            CartItem cartItem = cart.getItems().stream()
                 .filter(item -> item.getMenuItemId().equals(menuItem.getId()))
                 .findFirst()
                 .orElse(null);
@@ -72,7 +74,7 @@ public class OrderService {
                 double itemPrice = menuItem.getPrice() * cartItem.getQuantity();
                 totalPrice.updateAndGet(price -> price + itemPrice);
 
-                return OrderEntity.CartItem.builder()
+                return OrderItem.builder()
                     .menuItemId(menuItem.getId())
                     .quantity(cartItem.getQuantity())
                     .build();

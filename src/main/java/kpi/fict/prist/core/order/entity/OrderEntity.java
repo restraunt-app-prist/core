@@ -23,10 +23,8 @@ public class OrderEntity implements Persistable<String> {
 
     @Id
     private String id;
-
-    private List<CartItem> items;
+    private List<OrderItem> items;
     private Double totalPrice;
-
     private String paymentId;
     private OrderStatus status; 
     private String userExternalId;
@@ -42,7 +40,7 @@ public class OrderEntity implements Persistable<String> {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class CartItem {
+    public static class OrderItem {
         private String menuItemId;
         private Integer quantity;
     }

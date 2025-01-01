@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/orders")
+@RequestMapping("order")
 public class OrderController {
 
     private final OrderService orderService;
@@ -32,7 +32,7 @@ public class OrderController {
         return ResponseEntity.ok(orders);
     }
 
-    @GetMapping("/me")
+    @GetMapping("my")
     public ResponseEntity<List<OrderEntity>> getOrdersByUserExternalId(@AuthenticationPrincipal Jwt jwt) {
         String userExternalId = jwt.getSubject();
 
@@ -43,17 +43,16 @@ public class OrderController {
         return ResponseEntity.ok(orders);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("{id}")
     public ResponseEntity<OrderEntity> getOrderById(@PathVariable String id) {
         Optional<OrderEntity> order = orderService.getOrderById(id);
         return order.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<OrderEntity> createOrder(@AuthenticationPrincipal Jwt jwt, @RequestBody CreateOrderRequest request) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public OrderEntity createOrder(@AuthenticationPrincipal Jwt jwt, @RequestBody CreateOrderRequest request) {
         String userExternalId = jwt.getSubject();
-        
-        OrderEntity createdOrder = orderService.createOrder(new OrderRequest(userExternalId, request.getPaymentMethodId(), request.getLocation(), request.getNotes()));
-        return new ResponseEntity<>(createdOrder, HttpStatus.CREATED);
+        return orderService.createOrder(new OrderRequest(userExternalId, request.getPaymentMethodId(), request.getLocation(), request.getNotes()));
     }
 }
