@@ -6,4 +6,5 @@ import lombok.Data;
 public class CreateOrderRequest {
     private String paymentMethodId;
     private String location;
+    private String notes;
 }

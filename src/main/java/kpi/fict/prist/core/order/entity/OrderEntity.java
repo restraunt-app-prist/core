@@ -30,6 +30,8 @@ public class OrderEntity implements Persistable<String> {
     private String paymentId;
     private OrderStatus status; 
     private String userExternalId;
+    private String location;
+    private String notes;
 
     @CreatedDate
     private LocalDateTime creationDate;

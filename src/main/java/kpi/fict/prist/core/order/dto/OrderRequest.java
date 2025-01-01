@@ -9,5 +9,6 @@ public class OrderRequest {
     private String userExternalId;
     private String paymentMethodId;
     private String location;
+    private String notes;
 }
 

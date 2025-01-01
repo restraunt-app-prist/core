@@ -89,6 +89,8 @@ public class OrderService {
             .totalPrice(totalPrice.get())
             .status(OrderStatus.PENDING)
             .userExternalId(userExternalId)
+            .location(orderRequest.getLocation())
+            .notes(orderRequest.getNotes())
             .build();
 
         order = orderRepository.save(order);

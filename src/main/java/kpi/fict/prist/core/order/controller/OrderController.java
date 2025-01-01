@@ -53,7 +53,7 @@ public class OrderController {
     public ResponseEntity<OrderEntity> createOrder(@AuthenticationPrincipal Jwt jwt, @RequestBody CreateOrderRequest request) {
         String userExternalId = jwt.getSubject();
         
-        OrderEntity createdOrder = orderService.createOrder(new OrderRequest(userExternalId, request.getPaymentMethodId(), request.getLocation()));
+        OrderEntity createdOrder = orderService.createOrder(new OrderRequest(userExternalId, request.getPaymentMethodId(), request.getLocation(), request.getNotes()));
         return new ResponseEntity<>(createdOrder, HttpStatus.CREATED);
     }
 }
