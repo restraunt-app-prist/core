@@ -1,9 +1,9 @@
 package kpi.fict.prist.core.payment.dto;
 
-import lombok.Data;
+import jakarta.validation.constraints.NotNull;
 
-@Data
-public class CreatePaymentRequest {
-    private long amount;
-    private String description;
+public record CreatePaymentRequest(
+    @NotNull Long amount,
+    @NotNull String description
+) {
 }
