@@ -29,6 +29,7 @@
 
 	<properties>
 		<java.version>21</java.version>
+		<docker.image.name/>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -89,6 +90,19 @@
 							<artifactId>lombok</artifactId>
 						</exclude>
 					</excludes>
+					<image>
+						<builder>paketobuildpacks/builder-jammy-base:latest</builder>
+						<env>
+							<BP_JVM_VERSION>21</BP_JVM_VERSION>
+							<JAVA_TOOL_OPTIONS>-XX:+UnlockExperimentalVMOptions -XX:+UseShenandoahGC -XX:AdaptiveSizePolicyWeight=90 -XX:MinHeapFreeRatio=20 -XX:MaxHeapFreeRatio=40</JAVA_TOOL_OPTIONS>
+						</env>
+						<name>${docker.image.name}</name>
+						<createdDate>${maven.build.timestamp}</createdDate>
+						<buildpacks>
+							<buildpack>urn:cnb:builder:paketo-buildpacks/java</buildpack>
+							<buildpack>gcr.io/paketo-buildpacks/spring-boot:latest</buildpack>
+						</buildpacks>
+					</image>
 				</configuration>
 			</plugin>
 		</plugins>
