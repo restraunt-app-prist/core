@@ -1,18 +1,19 @@
 package kpi.fict.prist.core.payment.controller;
 
 import com.stripe.exception.SignatureVerificationException;
-import com.stripe.exception.StripeException;
 import com.stripe.model.Event;
 import com.stripe.model.PaymentIntent;
-import com.stripe.model.checkout.Session;
 import com.stripe.net.Webhook;
-import com.stripe.param.checkout.SessionCreateParams;
-import java.util.Map;
 
+import kpi.fict.prist.core.payment.dto.PaymentRequest;
+import kpi.fict.prist.core.payment.dto.PaymentSessionResponse;
+import kpi.fict.prist.core.payment.service.PaymentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -21,48 +22,14 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class PaymentController {
 
-    record PaymentRequest(Long amount) {
-    }
+    private final PaymentService paymentService;
 
     @Value("${stripe.webhook.secret.key}")
     private String webhookSecretKey;
 
     @PostMapping("create-session")
-    public ResponseEntity<?> createCheckoutSession(@RequestBody PaymentRequest request) {
-        try {
-            // Create line items for the session
-            SessionCreateParams.LineItem lineItem = SessionCreateParams.LineItem.builder()
-                .setPriceData(
-                    SessionCreateParams.LineItem.PriceData.builder()
-                        .setCurrency("uah")
-                        .setUnitAmount(request.amount) // Amount in cents
-                        .setProductData(
-                            SessionCreateParams.LineItem.PriceData.ProductData.builder()
-                                .setName("пицца с сыром") // Product name
-                                .build()
-                        )
-                        .build()
-                )
-                .setQuantity(1L) // Quantity of the product
-                .build();
-
-            // Create the session
-            SessionCreateParams params = SessionCreateParams.builder()
-                .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
-                .setMode(SessionCreateParams.Mode.PAYMENT)
-                .setSuccessUrl("http://localhost:8000/success")
-                .setCancelUrl("http://localhost:8000/cancel")
-                .setCustomerEmail("email@email.com")
-                .addLineItem(lineItem)
-                .build();
-
-            Session session = Session.create(params);
-
-            // Return session ID
-            return ResponseEntity.ok(Map.of("sessionId", session.getId()));
-        } catch (StripeException e) {
-            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
-        }
+    public PaymentSessionResponse createCheckoutSession(@AuthenticationPrincipal Jwt jwt, @RequestBody PaymentRequest request) {
+        return paymentService.createCheckoutSession(jwt.getSubject(), request);
     }
 
     @PostMapping("webhook")

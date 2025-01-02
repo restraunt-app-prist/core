@@ -58,4 +58,5 @@ public class OrderController {
         String userExternalId = jwt.getSubject();
         return orderService.calculateTotalSum(userExternalId, request);
     }
+
 }
