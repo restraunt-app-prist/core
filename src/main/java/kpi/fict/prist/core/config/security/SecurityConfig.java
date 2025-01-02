@@ -18,9 +18,10 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http, OAuth2UserCreationFilter filter) throws Exception {
         http
+            .csrf(csrf -> csrf.ignoringRequestMatchers("/payment/webhook"))
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/menu/**").permitAll()
-                .requestMatchers(HttpMethod.POST, "/payment/webhook/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/payment/webhook").permitAll()
                 .anyRequest().authenticated())
             .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
             .addFilterAfter(filter, BearerTokenAuthenticationFilter.class);

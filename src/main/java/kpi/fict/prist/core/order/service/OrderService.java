@@ -1,6 +1,5 @@
 package kpi.fict.prist.core.order.service;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -101,8 +100,7 @@ public class OrderService {
 
         order = orderRepository.save(order);
 
-        // Clear the cart after order creation
-        cartService.clearCart(userExternalId);
+//        cartService.clearCart(userExternalId);
 
         return order;
     }
@@ -121,6 +119,10 @@ public class OrderService {
         }
         totalSum += request.deliveryDistance() * DELIVERY_PRICE_PER_KILOMETER_UAH;
         return new TotalSumResponse(totalSum);
+    }
+
+    public Optional<OrderEntity> findByPaymentId(String paymentId) {
+        return orderRepository.findByPaymentId(paymentId);
     }
 
 }
