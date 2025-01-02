@@ -1,5 +1,6 @@
 package kpi.fict.prist.core.order.service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -7,6 +8,8 @@ import java.util.stream.Collectors;
 
 import kpi.fict.prist.core.cart.entity.CartEntity.CartItem;
 import kpi.fict.prist.core.order.dto.CreateOrderRequest;
+import kpi.fict.prist.core.order.dto.TotalSumRequest;
+import kpi.fict.prist.core.order.dto.TotalSumResponse;
 import kpi.fict.prist.core.order.entity.OrderEntity.OrderItem;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +24,7 @@ import kpi.fict.prist.core.order.repository.OrderEntityRepository;
 import java.util.concurrent.atomic.AtomicReference;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.util.CollectionUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -102,4 +106,21 @@ public class OrderService {
 
         return order;
     }
+
+    public TotalSumResponse calculateTotalSum(String userExternalId, TotalSumRequest request) {
+        CartEntity cart = cartService.getCartByUserExternalId(userExternalId);
+        if (CollectionUtils.isEmpty(cart.getItems())) {
+            throw new IllegalStateException("Cannot create an order with an empty cart.");
+        }
+        double totalSum = 0.0;
+        for (CartItem item : cart.getItems()) {
+            Optional<MenuItemEntity> menuItemById = menuService.getMenuItemById(item.getMenuItemId());
+            if (menuItemById.isPresent()) {
+                totalSum += menuItemById.get().getPrice() * item.getQuantity();
+            }
+        }
+        totalSum += request.deliveryDistance() * DELIVERY_PRICE_PER_KILOMETER_UAH;
+        return new TotalSumResponse(totalSum);
+    }
+
 }

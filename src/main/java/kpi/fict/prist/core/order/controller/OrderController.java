@@ -1,6 +1,8 @@
 package kpi.fict.prist.core.order.controller;
 
 import kpi.fict.prist.core.order.dto.CreateOrderRequest;
+import kpi.fict.prist.core.order.dto.TotalSumRequest;
+import kpi.fict.prist.core.order.dto.TotalSumResponse;
 import kpi.fict.prist.core.order.entity.OrderEntity;
 import kpi.fict.prist.core.order.service.OrderService;
 import org.springframework.http.HttpStatus;
@@ -49,5 +51,11 @@ public class OrderController {
     public OrderEntity createOrder(@AuthenticationPrincipal Jwt jwt, @RequestBody CreateOrderRequest request) {
         String userExternalId = jwt.getSubject();
         return orderService.createOrder(userExternalId, request);
+    }
+
+    @PostMapping("calculate-total-sum")
+    public TotalSumResponse calculateTotalSum(@AuthenticationPrincipal Jwt jwt, @RequestBody TotalSumRequest request) {
+        String userExternalId = jwt.getSubject();
+        return orderService.calculateTotalSum(userExternalId, request);
     }
 }
