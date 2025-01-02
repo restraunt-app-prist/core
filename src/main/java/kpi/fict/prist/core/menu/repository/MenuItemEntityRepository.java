@@ -11,6 +11,6 @@ import java.util.List;
 @Repository
 public interface MenuItemEntityRepository extends MongoRepository<MenuItemEntity, String> {
 
-    List<MenuItemEntity> findByCategory(MenuCategory category);
+    List<MenuItemEntity> findByCategoryAndAvailableIsTrue(MenuCategory category);
 }
 

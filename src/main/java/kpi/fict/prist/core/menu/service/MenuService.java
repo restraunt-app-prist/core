@@ -70,6 +70,6 @@ public class MenuService {
     }
 
     public List<MenuItemEntity> getMenuItemsByCategory(MenuCategory category) {
-        return menuItemRepository.findByCategory(category);
+        return menuItemRepository.findByCategoryAndAvailableIsTrue(category);
     }
 }
