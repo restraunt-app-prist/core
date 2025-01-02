@@ -100,7 +100,7 @@ public class OrderService {
 
         order = orderRepository.save(order);
 
-//        cartService.clearCart(userExternalId);
+        cartService.clearCart(userExternalId);
 
         return order;
     }
